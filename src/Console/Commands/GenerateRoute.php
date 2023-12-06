@@ -32,8 +32,8 @@ class GenerateRoute extends Command
         $routes = $getRoute.$getDetailRoute.$postRoute.$putRoute;
         $filePath = base_path("routes/web.php");
         $fileContent = File::get($filePath);
-        $insertPosition = strrpos($fileContent, "\n");
-        $newFileContent = substr_replace($fileContent, $routes . "\n", $insertPosition, 0);
+        $insertPosition = strrpos($fileContent, "\n") + 10;
+        $newFileContent = substr_replace($fileContent, $routes . "\n", $insertPosition, -1);
         File::put($filePath, $newFileContent);
         $this->info('Routes created with finished crud functionality.');
     }
