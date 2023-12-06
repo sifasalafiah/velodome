@@ -15,13 +15,18 @@ class GenerateFillableModel extends Command
     {
         $modelName = $this->argument('name');
         $tableName = $this->toSnakeCase($modelName);
-        $fillableFields = $this->option('fillable');
-        $this->call('make:model', [
-            'name' => $modelName
-        ]);
+
         $modelFilePath = base_path("app/Models/{$modelName}.php");
-        $this->addFillableProperty($modelFilePath, $fillableFields, $tableName);
-        $this->info('Model generated with fillable fields.');
+        if (file_exists($modelFilePath)) {
+            $this->info('Model is exist');
+        } else {
+            $fillableFields = $this->option('fillable');
+            $this->call('make:model', [
+                'name' => $modelName
+            ]);
+            $this->addFillableProperty($modelFilePath, $fillableFields, $tableName);
+            $this->info('Model generated with fillable fields.');
+        }
     }
 
     private function addFillableProperty($filePath, $fields, $tableName)

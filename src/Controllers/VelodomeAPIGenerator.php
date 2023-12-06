@@ -51,7 +51,7 @@ class VelodomeAPIGenerator extends Controller
         }
         $fieldNamesString = implode(',', $fieldNames);
 
-        try {
+        // try {
             $modelName = $this->toPascalCase($request->object_name);
             $migrationName = $this->toSnakeCase($request->object_name);
             $routeName = $this->toKebabCase($request->object_name);
@@ -60,9 +60,9 @@ class VelodomeAPIGenerator extends Controller
             Artisan::call("velodome:generate:model $modelName --fillable=$fieldNamesString");
             Artisan::call("velodome:generate:controller $modelName");
             Artisan::call("velodome:generate:route $routeName $controllerName");
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-        }
+        // } catch (\Throwable $th) {
+        //     dd($th->getMessage());
+        // }
 
         try {
             Artisan::call("migrate");

@@ -26,12 +26,18 @@ class GenerateController extends Command
         $modelName = $this->argument('name');
         $controllerName = $modelName.'Controller';
 
-        $this->call('make:controller', [
-            'name' => $controllerName
-        ]);
         $controllerFilePath = base_path("app/Http/Controllers/{$controllerName}.php");
-        $this->addFinishedCrudFunctionality($controllerFilePath, $modelName);
-        $this->info('Controller generated with finished CRUD Functionality.');
+
+        if (file_exists($controllerFilePath)) {
+            $this->info('Controller is exist.');
+        } else {
+            $this->call('make:controller', [
+                'name' => $controllerName
+            ]);
+            
+            $this->addFinishedCrudFunctionality($controllerFilePath, $modelName);
+            $this->info('Controller generated with finished CRUD Functionality.');
+        }
     }
 
     private function addFinishedCrudFunctionality($filePath, $modelName)

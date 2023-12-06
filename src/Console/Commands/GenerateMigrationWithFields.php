@@ -17,20 +17,23 @@ class GenerateMigrationWithFields extends Command
         $fields = str_replace("', '", "','", $this->option('fields'));
 
         $migrationName = 'create_' . $table . '_table';
-
-        $this->call('make:migration', [
-            'name' => $migrationName,
-            '--create' => $table,
-        ]);
-
         $migrationFilePath = $this->getMigrationFilePath($migrationName);
 
-        if ($migrationFilePath !== null) {
-            $this->addFieldsToMigration($migrationFilePath, $fields);
-
+        if ($migrationFilePath) {
             $this->info('Migration created with specified fields.');
         } else {
-            $this->error('Migration file not found.');
+            $this->call('make:migration', [
+                'name' => $migrationName,
+                '--create' => $table,
+            ]);
+            $createdMigrationFilePath = $this->getMigrationFilePath($migrationName);
+            if ($createdMigrationFilePath !== null) {
+                $this->addFieldsToMigration($createdMigrationFilePath, $fields);
+    
+                $this->info('Migration created with specified fields.');
+            } else {
+                $this->error('Migration file not found.');
+            }
         }
     }
 
