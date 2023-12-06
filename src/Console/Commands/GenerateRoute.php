@@ -29,7 +29,8 @@ class GenerateRoute extends Command
         $getDetailRoute = "\n".'$router->get'."('/$routeName/{id}', '$controllerName@show');";
         $postRoute = "\n".'$router->post'."('/$routeName', '$controllerName@store');";
         $putRoute = "\n".'$router->put'."('/$routeName/{id}', '$controllerName@update');";
-        $routes = $getRoute.$getDetailRoute.$postRoute.$putRoute;
+        $deleteRoute = "\n".'$router->delete'."('/$routeName/{id}', '$controllerName@destroy');";
+        $routes = $getRoute.$getDetailRoute.$postRoute.$putRoute.$deleteRoute;
         $filePath = base_path("routes/web.php");
         $fileContent = File::get($filePath);
         $insertPosition = strrpos($fileContent, "\n") + 10;
