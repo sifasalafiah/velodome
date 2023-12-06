@@ -14,22 +14,31 @@ class GenerateFillableModel extends Command
     public function handle()
     {
         $modelName = $this->argument('name');
+        $tableName = $this->toSnakeCase($modelName);
         $fillableFields = $this->option('fillable');
         $this->call('make:model', [
             'name' => $modelName
         ]);
         $modelFilePath = base_path("app/Models/{$modelName}.php");
-        $this->addFillableProperty($modelFilePath, $fillableFields);
+        $this->addFillableProperty($modelFilePath, $fillableFields, $tableName);
         $this->info('Model generated with fillable fields.');
     }
 
-    private function addFillableProperty($filePath, $fields)
+    private function addFillableProperty($filePath, $fields, $tableName)
     {
         $fillable = explode(',', $fields);
-        $fillableString = "\n\tprotected \$fillable = ['" . implode("', '", $fillable) . "'];";
+        $fillableString = "\n\tprotected \$table = "."'".$tableName."'".";\n\tprotected \$fillable = ['" . implode("', '", $fillable) . "'];";
         $fileContent = File::get($filePath);
         $insertPosition = strpos($fileContent, '//') + strlen('//');
         $newFileContent = substr_replace($fileContent, $fillableString . "\n", $insertPosition, 0);
         File::put($filePath, $newFileContent);
+    }
+
+    function toSnakeCase($string) {
+        $string = preg_replace('/\s+/u', '', ucwords($string));
+        $string = lcfirst($string);
+        $string = preg_replace('/\B([A-Z])/', '_$1', $string);
+    
+        return strtolower($string);
     }
 }
