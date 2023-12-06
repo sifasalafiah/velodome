@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <style>
         body {
-            background-color: rgba(32,33,35);
+            background-color: rgba(32, 33, 35);
         }
 
         .file-upload {
-            background-color: rgb(52,53,65);
+            background-color: rgb(52, 53, 65);
             width: 600px;
             border-radius: 8px;
             margin: 30px auto;
@@ -95,22 +95,22 @@
         }
 
         .image-upload-wrap {
-            background-color: rgb(52,53,65);
+            background-color: rgb(52, 53, 65);
             margin-top: 20px;
-            border: 1px solid rgb(86,88,105);
+            border: 1px solid rgb(86, 88, 105);
             border-radius: 8px;
             position: relative;
         }
 
         .image-dropping,
         .image-upload-wrap:hover {
-            background-color: rgb(86,88,105);
+            background-color: rgb(86, 88, 105);
             border: 1px dashed grey;
         }
 
         .image-title-wrap {
             padding: 0 15px 15px 15px;
-            color: rgb(86,88,105);
+            color: rgb(86, 88, 105);
         }
 
         .drag-text {
@@ -120,7 +120,7 @@
         .drag-text h3 {
             font-weight: 100;
             color: #c3c3c3;
-            padding: 60px 0;
+            padding: 0 0 60px 0;
         }
 
         .file-upload-image {
@@ -159,7 +159,7 @@
 
         .output-analyze-wrap {
             position: relative;
-            background-color: rgb(52,53,65);
+            background-color: rgb(52, 53, 65);
             width: 600px;
             min-height: 300px;
             border-radius: 8px;
@@ -179,7 +179,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            background: rgb(52,53,65);
+            background: rgb(52, 53, 65);
             transition: visibility 0s, opacity 0.5s linear;
         }
 
@@ -242,10 +242,64 @@
             }
         }
 
-        .form-label{
+        .form-label {
             color: #fff;
         }
-       
+
+        .pop-alert {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        .error {
+            color: rgb(171, 3, 3);
+            font-size: 8pt;
+            padding: 5px;
+        }
+
+
+        .typewriter h6 {
+            color: rgb(86, 88, 105);
+            font-family: monospace;
+            overflow: hidden;
+            /* Ensures the content is not revealed until the animation */
+            border-right: .15em solid orange;
+            /* The typwriter cursor */
+            white-space: nowrap;
+            /* Keeps the content on a single line */
+            margin: 0 auto;
+            /* Gives that scrolling effect as the typing happens */
+            letter-spacing: .15em;
+            /* Adjust as needed */
+            animation:
+                typing 3.5s steps(30, end),
+                blink-caret .5s step-end infinite;
+        }
+
+        /* The typing effect */
+        @keyframes typing {
+            from {
+                width: 0
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        /* The typewriter cursor effect */
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: orange
+            }
+        }
     </style>
 
     <title>Velodome</title>
@@ -253,18 +307,38 @@
 
 <body>
 
-    <!-- Nav -->
-    {{-- <nav class="navbar navbar-dark" style="background-color: #343541;">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="https://cdn.iconscout.com/icon/free/png-256/free-openai-1524262-1290809.png" alt="" width="30"
                     height="30" class="d-inline-block align-text-top">
-                Velodome
+                <span class="text-muted">Velodome</span>
             </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+                <!-- Button trigger modal -->
+            <button type="button" class="btn btn-outline-secondary m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="bi bi-info-circle"></i> Help
+            </button>
+                <a href="/velodome/api-generator">
+                    <button class="btn btn-outline-secondary"><i class="bi bi-arrow-repeat"></i> Reload</button>
+                </a>
+            </div>
         </div>
-    </nav> --}}
+    </nav>
 
-    
+    @if ($flash)
+    <div class="pop-alert alert alert-{{$flash['type']}} alert-dismissible fade show" role="alert">
+        <strong>{{$flash['title']}}</strong><br> {{$flash['message']}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
 
     @if(!$props)
     <!-- Image input -->
@@ -274,7 +348,8 @@
             <div class="image-upload-wrap">
                 <input class="file-upload-input" type='file' name="file" id="file" onchange="readURL(this);"
                     accept="image/*" />
-                <div class="drag-text">
+                <div class="drag-text pt-3">
+                    <i style="font-size: 50pt; color: rgb(164, 164, 164);" class="bi bi-upload"></i>
                     <h3>Drag and drop a file or select add Image</h3>
                 </div>
             </div>
@@ -293,11 +368,20 @@
                     <div class="wave"></div>
                 </div>
 
+
+
                 <div class="image-title-wrap">
                     <button type="button" onclick="removeUpload()" class="remove-image">Remove <span
                             class="image-title">Uploaded Image</span> </button>
                 </div>
             </div>
+
+            <div class="d-flex justify-content-center">
+                <div id="loaderText" class="typewriter">
+                    <h6>Analyzing images.</h6>
+                </div>
+            </div>
+
 
             <button type="submit" id="button_analyze" class="file-analyze-btn">Analyze Image</button>
         </form>
@@ -307,6 +391,7 @@
     {{-- Form input --}}
     <form id="formGenerate" action="/velodome/api-generator/generate" method="post" enctype="multipart/form-data">
         <div class="output-analyze-wrap">
+            <h6 class="text-center" style="color:rgb(86, 87, 99)">Analysis results</h6>
             <div class="form-group">
                 <label for="object_name" class="form-label">Model name</label>
                 <input class="form-control" name="object_name" id="object_name" placeholder="Enter model name..."
@@ -315,18 +400,69 @@
 
             <div class="form-group mt-3">
                 <label for="object_name" class="form-label">Model property</label>
-                <div class="d-flex justify-content-between align-items-center" style="background-color:#202123;height:35px;border: 0px;border-radius: 8px 8px 0px 0px">
+                <div class="d-flex justify-content-between align-items-center"
+                    style="background-color:#202123;height:35px;border: 0px;border-radius: 8px 8px 0px 0px">
                     <div class="px-3" style="font-weight: 100;color:whitesmoke">Model</div>
-                    {{-- <div class="px-3"><a href="" style="text-decoration: none; color:whitesmoke"><i class="bi bi-clipboard pr-2"></i><small style="font-size: 9pt;padding-left:5px;font-weight: 100;">Copy</small></a></div> --}}
+                    {{-- <div class="px-3"><a href="" style="text-decoration: none; color:whitesmoke"><i
+                                class="bi bi-clipboard pr-2"></i><small
+                                style="font-size: 9pt;padding-left:5px;font-weight: 100;">Copy</small></a></div> --}}
                 </div>
-                <textarea class="form-control mb-3" name="props" id="props" rows="9" style="background-color: #000;color:rgb(253, 208, 124);border-radius: 0px 0px 8px 8px; border: 0">{{ $props }}</textarea>
+                <textarea class="form-control" name="props" id="props" rows="9"
+                    style="background-color: #000;color:rgb(253, 208, 124);border-radius: 0px 0px 8px 8px; border: 0">{{ $props }}</textarea>
             </div>
-            <div class="align-self-end">
+
+            <div id="loader" class="loader">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+            </div>
+
+
+            <div class="align-self-end mt-3">
                 <button id="button_generate" type="submit" class="file-generate-btn">Generate</button>
             </div>
         </div>
     </form>
     @endif
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog bg-dark" style="border-radius: 8px">
+          <div class="modal-content bg-dark">
+            <div class="modal-header bg-dark" style="border-bottom: 1px solid rgb(77, 77, 77);">
+              <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Help</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-white">
+              How to use
+              <ul>
+                <li>Upload image</li>
+                <li>Click analyze image</li>
+                <li>Wait for result model</li>
+                <li>Type name of model</li>
+                <li>Edit the model as desired</li>
+                <li>Click generate</li>
+
+              </ul>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid rgb(77, 77, 77);">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <footer class="bg-dark text-center text-lg-start fixed-bottom">
+        <div class="text-center" style="color: rgb(144, 144, 144)">
+            <small>Version 1.0</small>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -334,12 +470,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 
     <script>
+
         $(document).ready(function () {
 
             var formAnalyze = $("#formAnalyze");
             var formGenerate = $("#formGenerate")
             var loader = $("#loader");
-            var fileUpload =  $("#fileUpload");
+            var loaderText = $("#loaderText");
+            var fileUpload = $("#fileUpload");
+            loaderText.hide();
 
 
             formAnalyze.validate({ // initialize the plugin
@@ -374,23 +513,22 @@
                 }
             });
 
-            $('#button_analyze').click(function(e)
-            {
+            $('#button_analyze').click(function (e) {
                 e.preventDefault();
-                if(formAnalyze.valid())
-                {
+                if (formAnalyze.valid()) {
                     loader.css({ display: "flex" });
-                    $('#button_analyze').css({ display: "none"});
-                    $('.remove-image').css({ display: "none"});
+                    loaderText.show();
+                    $('#button_analyze').css({ display: "none" });
+                    $('.remove-image').css({ display: "none" });
                     formAnalyze.submit();
                 }
             });
 
-            $('#button_generate').click(function(e)
-            {
+            $('#button_generate').click(function (e) {
                 e.preventDefault();
-                if(formGenerate.valid())
-                {
+                if (formGenerate.valid()) {
+                    loader.css({ display: "flex" });
+                    $('#button_generate').css({ display: "none" });
                     formGenerate.submit();
                 }
             });
