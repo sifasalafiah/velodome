@@ -54,18 +54,14 @@ class VelodomeAPIGenerator extends Controller
         }
         $fieldNamesString = implode(',', $fieldNames);
 
-        // try {
-            $modelName = $this->toPascalCase($request->object_name);
-            $migrationName = $this->toSnakeCase($request->object_name);
-            $routeName = $this->toKebabCase($request->object_name);
-            $controllerName = $modelName . 'Controller';
-            Artisan::call(str_replace(", ", ",", "velodome:generate:migration $migrationName --fields=$fieldsString"));
-            Artisan::call("velodome:generate:model $modelName --fillable=$fieldNamesString");
-            Artisan::call("velodome:generate:controller $modelName");
-            Artisan::call("velodome:generate:route $routeName $controllerName");
-        // } catch (\Throwable $th) {
-        //     dd($th->getMessage());
-        // }
+        $modelName = $this->toPascalCase($request->object_name);
+        $migrationName = $this->toSnakeCase($request->object_name);
+        $routeName = $this->toKebabCase($request->object_name);
+        $controllerName = $modelName . 'Controller';
+        Artisan::call(str_replace(", ", ",", "velodome:generate:migration $migrationName --fields=$fieldsString"));
+        Artisan::call("velodome:generate:model $modelName --fillable=$fieldNamesString");
+        Artisan::call("velodome:generate:controller $modelName");
+        Artisan::call("velodome:generate:route $routeName $controllerName");
 
         try {
             Artisan::call("migrate");
@@ -93,19 +89,19 @@ class VelodomeAPIGenerator extends Controller
 
     function toSnakeCase($string)
     {
-        $string = preg_replace('/\s+/u', '', ucwords($string)); // Menghilangkan spasi dan membuat huruf pertama menjadi huruf kapital
-        $string = lcfirst($string); // Mengubah huruf pertama menjadi huruf kecil
-        $string = preg_replace('/\B([A-Z])/', '_$1', $string); // Menambahkan garis bawah sebelum huruf kapital kecuali di awal kata
+        $string = preg_replace('/\s+/u', '', ucwords($string));
+        $string = lcfirst($string);
+        $string = preg_replace('/\B([A-Z])/', '_$1', $string);
 
-        return strtolower($string); // Mengonversi semua huruf menjadi huruf kecil
+        return strtolower($string);
     }
 
     function toKebabCase($string)
     {
-        $string = preg_replace('/[^a-zA-Z0-9]/', ' ', $string); // Menghapus karakter khusus selain huruf dan angka
-        $string = preg_replace('/\s+/', ' ', $string); // Menghapus spasi berlebih
-        $string = trim($string); // Menghapus spasi di awal dan akhir string
-        $string = strtolower($string); // Mengubah semua huruf menjadi huruf kecil
-        return str_replace(' ', '-', $string); // Mengganti spasi dengan dash (-)
+        $string = preg_replace('/[^a-zA-Z0-9]/', ' ', $string);
+        $string = preg_replace('/\s+/', ' ', $string);
+        $string = trim($string);
+        $string = strtolower($string);
+        return str_replace(' ', '-', $string);
     }
 }

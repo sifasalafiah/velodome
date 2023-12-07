@@ -38,7 +38,6 @@ trait OpenAITrait
             $content = $this->extractContent($responseData['choices'][0]['message']['content']);
             return $content;
         } else {
-            $errorCode = $response->status();
             $errorMessage = $response->body();
             return $errorMessage;
         }
@@ -47,9 +46,10 @@ trait OpenAITrait
     private function extractContent($content) {
         $pattern = '/\b\w+\s*:\s*\w+\b/';
         preg_match_all($pattern, $content, $matches);
+
         $extractedStrings = implode(', ', $matches[0]);
-        $extractedStringsNoSpace = str_replace(' ', '', $extractedStrings);
-        $textWithSpacesAfterComa = str_replace(',', ', ', $extractedStringsNoSpace);
-        return $textWithSpacesAfterComa;
-    }
+        $optimizedString = str_replace([' ', ','], ['', ', '], $extractedStrings);
+        
+        return $optimizedString;
+    }    
 }
